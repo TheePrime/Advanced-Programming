@@ -1,30 +1,40 @@
 package Lecture4_interfaces_abstract_classes;
 
 import org.jetbrains.annotations.NotNull;
-
 import java.util.Calendar;
 
-public class DepositTrasaction extends BaseTransaction {
-    public DepositTrasaction(int amount, @NotNull Calendar date){
+public class DepositTransaction extends BaseTransaction {
+
+    public DepositTransaction(int amount, @NotNull Calendar date) {
         super(amount, date);
     }
-    private boolean checkDepositAmount(int amt){
-        if (amt < 0){
-           return false;
-        }
-        else{
-            return  true;
-        }
+
+    private boolean checkDepositAmount(int amt) {
+        return amt > 0; // Simplified condition for better readability
     }
 
     // Method to print a transaction receipt or details
-    public void printTransactionDetails(){
-        System.out.println("Deposit Trasaction: "+this.toString());
+    @Override
+    public void printTransactionDetails() {
+        System.out.println("Transaction Type: Deposit");
+        System.out.println("Transaction ID: " + getTransactionID());
+        System.out.println("Transaction Amount: " + getAmount());
+        System.out.println("Transaction Date: " + getDate().getTime());
     }
 
-    public void apply(BankAccount ba){
-        double curr_balance = ba.getBalance();
-        double new_balance = curr_balance + getAmount();
-        ba.setBalance(new_balance);
+    // Overriding the apply method for deposits
+    @Override
+    public void apply(BankAccount ba) {
+        if (!checkDepositAmount((int) getAmount())) {
+            System.out.println("Invalid deposit amount. Transaction failed.");
+            return;
+        }
+
+        double currBalance = ba.getBalance();
+        double newBalance = currBalance + getAmount();
+        ba.setBalance(newBalance);
+
+        System.out.println("Deposit of " + getAmount() + " applied successfully.");
+        System.out.println("New Balance: " + ba.getBalance());
     }
 }
